@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @match        https://haiwaikan.com/index.php/vod/play/id/*
@@ -46,7 +46,12 @@
     downloadButton.onclick = function() {
       var titleContainer = document.querySelector('.stui-content__detail .title, .stui-player__detail .title').innerHTML;
       var title = titleContainer.replace(/<[^>].*>/g, '');
-      var eps = ct[0].innerText.match(/\d+/g)[0] + '-' + ct[ct.length-1].innerText.match(/\d+/g)[0]
+      var eps;
+      if (ct.length > 1){
+          eps = '(' + ct[0].innerText.match(/\d+/g)[0] + '-' + ct[ct.length-1].innerText.match(/\d+/g)[0] + ')'
+      } else {
+          eps = '(' + ct[0].innerText.match(/\d+/g)[0] + ')'
+      }
       var fileName = title + eps + ".m3u";
       var m3uContent = m3uoutput;
       var blob = new Blob([m3uContent], {type: "text/plain"});
