@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.2.2
+// @version      0.2.3 
 // @description  Add playlist
 // @author       pb8DvwQkfRR
+// @license      MIT
 // @match        https://haiwaikan.com/index.php/vod/play/id/*
 // @match        https://haiwaikan.com/index.php/vod/detail/id/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=haiwaikan.com
