@@ -1,23 +1,23 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.2.3 
+// @version      0.2.4
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
 // @match        https://haiwaikan.com/index.php/vod/play/id/*
 // @match        https://haiwaikan.com/index.php/vod/detail/id/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=haiwaikan.com
-// @updateURL    https://raw.githubusercontent.com/pb8DvwQkfRR/haiwaikan-playlist/main/haiwaikan.user.js
 // @grant        none
 // ==/UserScript==
 
 (function() {
     'use strict';
-
-    var m3uheader = "#EXTM3U";
+    var m3utitle = document.querySelector('.stui-content__detail .title, .stui-player__detail .title').innerHTML.replace(/<[^>].*>/g, '');
+    var m3uheader = "#EXTM3U" + '\n';
+    var m3uinfo = "#EXTALB:" + m3utitle;
     var m3uep = "#EXTINF:-1, ";
-    var m3uoutput = m3uheader + '\n';
+    var m3uoutput = m3uheader + m3uinfo + '\n';
     var ct = document.querySelectorAll(".copy_text");
     ct.forEach(el => {
         var m3ulink = el.querySelector(".hidden-xs").innerText.replace('$', '');
@@ -45,10 +45,8 @@
     downloadButton.style.borderRadius = "4px";
 
     downloadButton.onclick = function() {
-      var titleContainer = document.querySelector('.stui-content__detail .title, .stui-player__detail .title').innerHTML;
-      var title = titleContainer.replace(/<[^>].*>/g, '');
       var eps = '(' + ct[0].innerText.split('$')[0] + (ct.length > 1 ? '-' + ct[ct.length-1].innerText.split('$')[0] : '') + ')';
-      var fileName = title + eps + ".m3u";
+      var fileName = m3utitle + eps + ".m3u";
       var m3uContent = m3uoutput;
       var blob = new Blob([m3uContent], {type: "text/plain"});
       var link = document.createElement("a");
