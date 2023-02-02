@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.3.1
+// @version      0.3.2
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -74,7 +74,7 @@
         textArea.select();
         document.execCommand("copy");
         document.querySelector('#stateDiv').innerHTML = "已复制！"
-        textArea.blur();
+        document.body.removeChild(textArea);
     });
 
     var sendButton = document.createElement("button");
@@ -95,13 +95,24 @@
             },
             onload: function(response) {
                 var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
-                document.querySelector('#stateDiv').innerHTML = "已复制 URL！"
                 var textArea = document.createElement("textarea");
                 textArea.value = url;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand("copy");
-                textArea.blur();
+                document.body.removeChild(textArea);
+            },
+            onreadystatechange: function(response) {
+                switch (this.readyState) {
+                    case (XMLHttpRequest.DONE):
+                        document.querySelector('#stateDiv').innerHTML = "已复制 URL！"
+                        break;
+                    case (XMLHttpRequest.OPENED || XMLHttpRequest.HEADERS_RECEIVED || XMLHttpRequest.LOADING):
+                        document.querySelector('#stateDiv').innerHTML = "发送中..."
+                        break;
+                    case (XMLHttpRequest.UNSENT):
+                        document.querySelector('#stateDiv').innerHTML = "Error"
+                }
             }
         })
     });
