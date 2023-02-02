@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.3
+// @version      0.3.1
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -14,7 +14,7 @@
 (function() {
     'use strict';
     var m3utitle = document.querySelector('.stui-content__detail .title, .stui-player__detail .title').innerHTML.replace(/<[^>].*>/g, '');
-    var m3uheader = "#EXTM3U" + '\n';
+    var m3uheader = "#EXTM3U\n";
     var m3uinfo = "#EXTALB:" + m3utitle;
     var m3uep = "#EXTINF:-1, ";
     var m3uoutput = m3uheader + m3uinfo + '\n';
@@ -50,14 +50,13 @@
     downloadButton.style.borderRadius = "4px";
 
     downloadButton.onclick = function() {
-
-      var m3uContent = m3uoutput;
-      var blob = new Blob([m3uContent], {type: "text/plain"});
-      var link = document.createElement("a");
-      link.download = fileName;
-      link.href = URL.createObjectURL(blob);
-      link.click();
-      document.querySelector('#stateDiv').innerHTML = "完成！"
+        var m3uContent = m3uoutput;
+        var blob = new Blob([m3uContent], {type: "text/plain"});
+        var link = document.createElement("a");
+        link.download = fileName;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+        document.querySelector('#stateDiv').innerHTML = "完成！"
     }
 
     var copyButton = document.createElement("button");
@@ -113,9 +112,5 @@
     buttonContainer.appendChild(sendButton);
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
     buttonContainer.parentNode.insertBefore(stateDiv, buttonContainer);
-
-
-
-
-
 })();
+
