@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.2.4
+// @version      0.3
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
 // @match        https://haiwaikan.com/index.php/vod/play/id/*
 // @match        https://haiwaikan.com/index.php/vod/detail/id/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=haiwaikan.com
-// @grant        none
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
 (function() {
@@ -24,7 +24,12 @@
         var desp = el.innerText.split('$')[0];
         m3uoutput += m3uep + desp + '\n' + m3ulink + '\n';
     });
+    var eps = '(' + ct[0].innerText.split('$')[0] + (ct.length > 1 ? '-' + ct[ct.length-1].innerText.split('$')[0] : '') + ')';
+    var fileName = m3utitle + eps + ".m3u";
     var footDiv = document.querySelector('.stui-foot');
+    var stateDiv = document.createElement("div");
+    stateDiv.id = "stateDiv";
+
     var m3uDiv = document.createElement("div");
     m3uDiv.innerHTML = "<pre>" + m3uoutput + "</pre>";
     m3uDiv.style.display = "flex";
@@ -45,14 +50,14 @@
     downloadButton.style.borderRadius = "4px";
 
     downloadButton.onclick = function() {
-      var eps = '(' + ct[0].innerText.split('$')[0] + (ct.length > 1 ? '-' + ct[ct.length-1].innerText.split('$')[0] : '') + ')';
-      var fileName = m3utitle + eps + ".m3u";
+
       var m3uContent = m3uoutput;
       var blob = new Blob([m3uContent], {type: "text/plain"});
       var link = document.createElement("a");
       link.download = fileName;
       link.href = URL.createObjectURL(blob);
       link.click();
+      document.querySelector('#stateDiv').innerHTML = "完成！"
     }
 
     var copyButton = document.createElement("button");
@@ -69,13 +74,48 @@
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand("copy");
-        document.body.removeChild(textArea);
+        document.querySelector('#stateDiv').innerHTML = "已复制！"
+        textArea.blur();
+    });
+
+    var sendButton = document.createElement("button");
+    sendButton.innerHTML = "发送至 transfer.sh"
+    sendButton.style.backgroundColor = "#4CAF50";
+    sendButton.style.color = "white";
+    sendButton.style.margin = "10px";
+    sendButton.style.padding = "10px 20px";
+    sendButton.style.borderRadius = "4px";
+
+    sendButton.addEventListener("click", function() {
+        GM_xmlhttpRequest({
+            method: "PUT",
+            url: "https://transfer.sh/" + fileName,
+            data: m3uoutput,
+            headers: {
+                "Content-Type": "application/octet-stream"
+            },
+            onload: function(response) {
+                var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
+                document.querySelector('#stateDiv').innerHTML = "已复制 URL！"
+                var textArea = document.createElement("textarea");
+                textArea.value = url;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand("copy");
+                textArea.blur();
+            }
+        })
     });
 
     footDiv.parentNode.insertBefore(m3uDiv, footDiv);
     buttonContainer.appendChild(copyButton);
     buttonContainer.appendChild(downloadButton);
-
+    buttonContainer.appendChild(sendButton);
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
+    buttonContainer.parentNode.insertBefore(stateDiv, buttonContainer);
+
+
+
+
 
 })();
