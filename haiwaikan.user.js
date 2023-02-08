@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.3.2
+// @version      0.3.3
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -93,6 +93,10 @@
             headers: {
                 "Content-Type": "application/octet-stream"
             },
+            timeout: 5000,
+            ontimeout: function () {
+                document.querySelector('#stateDiv').innerHTML = "请求超时"
+            },
             onload: function(response) {
                 var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
                 var textArea = document.createElement("textarea");
@@ -110,8 +114,6 @@
                     case (XMLHttpRequest.OPENED || XMLHttpRequest.HEADERS_RECEIVED || XMLHttpRequest.LOADING):
                         document.querySelector('#stateDiv').innerHTML = "发送中..."
                         break;
-                    case (XMLHttpRequest.UNSENT):
-                        document.querySelector('#stateDiv').innerHTML = "Error"
                 }
             }
         })
