@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.3.3
+// @version      0.3.4
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -31,7 +31,7 @@
     stateDiv.id = "stateDiv";
 
     var m3uDiv = document.createElement("div");
-    m3uDiv.innerHTML = "<pre>" + m3uoutput + "</pre>";
+    m3uDiv.innerHTML = `<pre style="white-space: pre-wrap; word-break: break-word">` + m3uoutput + "</pre>";
     m3uDiv.style.display = "flex";
     m3uDiv.style.flexDirection = "column";
     m3uDiv.style.alignItems = "center";
@@ -39,14 +39,27 @@
 
     var buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
-    buttonContainer.style.justifyContent = "space-between";
+    function updateButtonContainer() {
+        var isPortrait = window.innerWidth >= 768;
+        buttonContainer.appendChild(copyButton);
+        buttonContainer.appendChild(downloadButton);
+        buttonContainer.appendChild(sendButton);
+        buttonContainer.style.position = isPortrait ? "fixed" : "";
+        buttonContainer.style.flexDirection = isPortrait ? "column" : "";
+        buttonContainer.style.right = isPortrait ? "10px" : "";
+        buttonContainer.style.bottom = isPortrait ? "50%" : "";
+        buttonContainer.style.transform = isPortrait ? "translateY(50%)" : "";
+    }
+
+    window.addEventListener("resize", updateButtonContainer);
+    window.addEventListener("load", updateButtonContainer);
 
     var downloadButton = document.createElement("button");
     downloadButton.innerHTML = "下载列表"
     downloadButton.style.backgroundColor = "#4CAF50";
     downloadButton.style.color = "white";
     downloadButton.style.margin = "10px";
-    downloadButton.style.padding = "10px 20px";
+    downloadButton.style.padding = "10px 15px";
     downloadButton.style.borderRadius = "4px";
 
     downloadButton.onclick = function() {
@@ -64,7 +77,7 @@
     copyButton.style.backgroundColor = "#4CAF50";
     copyButton.style.color = "white";
     copyButton.style.margin = "10px";
-    copyButton.style.padding = "10px 20px";
+    copyButton.style.padding = "10px 15px";
     copyButton.style.borderRadius = "4px";
 
     copyButton.addEventListener("click", function() {
@@ -82,7 +95,7 @@
     sendButton.style.backgroundColor = "#4CAF50";
     sendButton.style.color = "white";
     sendButton.style.margin = "10px";
-    sendButton.style.padding = "10px 20px";
+    sendButton.style.padding = "10px 15px";
     sendButton.style.borderRadius = "4px";
 
     sendButton.addEventListener("click", function() {
@@ -120,9 +133,6 @@
     });
 
     footDiv.parentNode.insertBefore(m3uDiv, footDiv);
-    buttonContainer.appendChild(copyButton);
-    buttonContainer.appendChild(downloadButton);
-    buttonContainer.appendChild(sendButton);
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
     buttonContainer.parentNode.insertBefore(stateDiv, buttonContainer);
 })();
