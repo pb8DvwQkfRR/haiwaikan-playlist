@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.3.5
+// @version      0.3.6
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -28,11 +28,17 @@
     var eps = '(' + ct[0].innerText.split('$')[0] + (ct.length > 1 ? '-' + ct[ct.length-1].innerText.split('$')[0] : '') + ')';
     var fileName = m3utitle + eps + ".m3u";
     var footDiv = document.querySelector('.stui-foot');
+    var playlistDiv = document.querySelector('#playlist');
     var stateDiv = document.createElement("div");
     stateDiv.id = "stateDiv";
+    stateDiv.style.textAlignLast = "center";
+    stateDiv.style.marginTop = "30px";
+    stateDiv.style.fontSize = "20px";
 
-    var m3uDiv = document.createElement("div");
-    m3uDiv.innerHTML = `<pre style="white-space: pre-wrap; word-break: break-word">` + m3uoutput + "</pre>";
+    var m3uDiv = document.createElement("pre");
+    m3uDiv.innerHTML = m3uoutput;
+    m3uDiv.style.whiteSpace = "pre-wrap";
+    m3uDiv.style.wordBreak = "break-word";
     m3uDiv.style.display = "flex";
     m3uDiv.style.flexDirection = "column";
     m3uDiv.style.alignItems = "center";
@@ -125,6 +131,6 @@
 
     footDiv.parentNode.insertBefore(m3uDiv, footDiv);
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
-    buttonContainer.parentNode.insertBefore(stateDiv, buttonContainer);
+    playlistDiv.parentNode.insertBefore(stateDiv, playlistDiv);
 })();
 
