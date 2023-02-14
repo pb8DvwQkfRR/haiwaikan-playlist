@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.3.6
+// @version      0.3.7
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -76,6 +76,10 @@
         link.download = fileName;
         link.href = URL.createObjectURL(blob);
         link.click();
+        document.getElementById("stateDiv").scrollIntoView({
+            behavior: 'smooth',
+            block: "center"
+        });
         document.querySelector('#stateDiv').innerHTML = "完成！";
     }
 
@@ -89,6 +93,10 @@
 
     copyButton.addEventListener("click", function() {
         GM_setClipboard(m3uoutput);
+        document.getElementById("stateDiv").scrollIntoView({
+            behavior: 'smooth',
+            block: "center"
+        });
         document.querySelector('#stateDiv').innerHTML = "已复制！";
     });
 
@@ -117,6 +125,10 @@
                 GM_setClipboard(url);
             },
             onreadystatechange: function(response) {
+            document.getElementById("stateDiv").scrollIntoView({
+                behavior: 'smooth',
+                block: "center"
+            });
                 switch (this.readyState) {
                     case (XMLHttpRequest.DONE):
                         document.querySelector('#stateDiv').innerHTML = "已复制 URL！";
