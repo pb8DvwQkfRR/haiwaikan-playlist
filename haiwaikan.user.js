@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.3.4
+// @version      0.3.5
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -9,6 +9,7 @@
 // @match        https://haiwaikan.com/index.php/vod/detail/id/*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=haiwaikan.com
 // @grant        GM_xmlhttpRequest
+// @grant        GM_setClipboard
 // ==/UserScript==
 
 (function() {
@@ -55,7 +56,7 @@
     window.addEventListener("load", updateButtonContainer);
 
     var downloadButton = document.createElement("button");
-    downloadButton.innerHTML = "下载列表"
+    downloadButton.innerHTML = "下载列表";
     downloadButton.style.backgroundColor = "#4CAF50";
     downloadButton.style.color = "white";
     downloadButton.style.margin = "10px";
@@ -69,11 +70,11 @@
         link.download = fileName;
         link.href = URL.createObjectURL(blob);
         link.click();
-        document.querySelector('#stateDiv').innerHTML = "完成！"
+        document.querySelector('#stateDiv').innerHTML = "完成！";
     }
 
     var copyButton = document.createElement("button");
-    copyButton.innerHTML = "复制"
+    copyButton.innerHTML = "复制";
     copyButton.style.backgroundColor = "#4CAF50";
     copyButton.style.color = "white";
     copyButton.style.margin = "10px";
@@ -81,17 +82,12 @@
     copyButton.style.borderRadius = "4px";
 
     copyButton.addEventListener("click", function() {
-        var textArea = document.createElement("textarea");
-        textArea.value = m3uoutput;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand("copy");
-        document.querySelector('#stateDiv').innerHTML = "已复制！"
-        document.body.removeChild(textArea);
+        GM_setClipboard(m3uoutput);
+        document.querySelector('#stateDiv').innerHTML = "已复制！";
     });
 
     var sendButton = document.createElement("button");
-    sendButton.innerHTML = "发送至 transfer.sh"
+    sendButton.innerHTML = "发送至 transfer.sh";
     sendButton.style.backgroundColor = "#4CAF50";
     sendButton.style.color = "white";
     sendButton.style.margin = "10px";
@@ -108,24 +104,19 @@
             },
             timeout: 5000,
             ontimeout: function () {
-                document.querySelector('#stateDiv').innerHTML = "请求超时"
+                document.querySelector('#stateDiv').innerHTML = "请求超时";
             },
             onload: function(response) {
                 var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
-                var textArea = document.createElement("textarea");
-                textArea.value = url;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand("copy");
-                document.body.removeChild(textArea);
+                GM_setClipboard(url);
             },
             onreadystatechange: function(response) {
                 switch (this.readyState) {
                     case (XMLHttpRequest.DONE):
-                        document.querySelector('#stateDiv').innerHTML = "已复制 URL！"
+                        document.querySelector('#stateDiv').innerHTML = "已复制 URL！";
                         break;
                     case (XMLHttpRequest.OPENED || XMLHttpRequest.HEADERS_RECEIVED || XMLHttpRequest.LOADING):
-                        document.querySelector('#stateDiv').innerHTML = "发送中..."
+                        document.querySelector('#stateDiv').innerHTML = "发送中...";
                         break;
                 }
             }
