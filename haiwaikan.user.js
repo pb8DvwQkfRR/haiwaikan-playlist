@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.3.7
+// @version      0.3.9
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -44,18 +44,27 @@
     m3uDiv.style.alignItems = "center";
     m3uDiv.style.marginTop = "10px";
 
+    var isLandscape = window.innerWidth >= 768;
     var buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
+
     function updateButtonContainer() {
-        var isPortrait = window.innerWidth >= 768;
         buttonContainer.appendChild(copyButton);
         buttonContainer.appendChild(downloadButton);
         buttonContainer.appendChild(sendButton);
-        buttonContainer.style.position = isPortrait ? "fixed" : "";
-        buttonContainer.style.flexDirection = isPortrait ? "column" : "";
-        buttonContainer.style.right = isPortrait ? "10px" : "";
-        buttonContainer.style.bottom = isPortrait ? "50%" : "";
-        buttonContainer.style.transform = isPortrait ? "translateY(50%)" : "";
+        buttonContainer.style.transform = isLandscape ? "translateY(50%)" : "";
+        buttonContainer.style.position = isLandscape ? "fixed" : "";
+        buttonContainer.style.flexDirection = isLandscape ? "column" : "";
+        buttonContainer.style.right = isLandscape ? "10px" : "";
+        buttonContainer.style.bottom = isLandscape ? "50%" : "";
+        buttonContainer.style.transition = isLandscape ? "all 0.3s" : "";
+        buttonContainer.style.opacity = isLandscape ? "0.7" : "";
+        buttonContainer.addEventListener("mouseout", function(){
+            this.style.opacity = isLandscape ? "0.7" : "";
+        });
+        buttonContainer.addEventListener("mouseover", function(){
+            this.style.opacity = isLandscape ? "1" : "";
+        });
     }
 
     window.addEventListener("resize", updateButtonContainer);
@@ -76,10 +85,12 @@
         link.download = fileName;
         link.href = URL.createObjectURL(blob);
         link.click();
-        document.getElementById("stateDiv").scrollIntoView({
-            behavior: 'smooth',
-            block: "center"
-        });
+        if(isLandscape){
+            document.getElementById("stateDiv").scrollIntoView({
+                behavior: 'smooth',
+                block: "center"
+            });
+        }
         document.querySelector('#stateDiv').innerHTML = "完成！";
     }
 
@@ -93,10 +104,12 @@
 
     copyButton.addEventListener("click", function() {
         GM_setClipboard(m3uoutput);
-        document.getElementById("stateDiv").scrollIntoView({
-            behavior: 'smooth',
-            block: "center"
-        });
+        if(isLandscape){
+            document.getElementById("stateDiv").scrollIntoView({
+                behavior: 'smooth',
+                block: "center"
+            });
+        }
         document.querySelector('#stateDiv').innerHTML = "已复制！";
     });
 
@@ -125,10 +138,12 @@
                 GM_setClipboard(url);
             },
             onreadystatechange: function(response) {
-            document.getElementById("stateDiv").scrollIntoView({
-                behavior: 'smooth',
-                block: "center"
-            });
+                if(isLandscape){
+                    document.getElementById("stateDiv").scrollIntoView({
+                        behavior: 'smooth',
+                        block: "center"
+                    });
+                }
                 switch (this.readyState) {
                     case (XMLHttpRequest.DONE):
                         document.querySelector('#stateDiv').innerHTML = "已复制 URL！";
@@ -145,4 +160,5 @@
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
     playlistDiv.parentNode.insertBefore(stateDiv, playlistDiv);
 })();
+
 
