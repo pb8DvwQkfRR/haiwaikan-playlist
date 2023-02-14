@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.3.9
+// @version      0.4.0
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -15,9 +15,9 @@
 (function() {
     'use strict';
     var m3utitle = document.querySelector('.stui-content__detail .title, .stui-player__detail .title').innerHTML.replace(/<[^>].*>/g, '');
-    var m3uheader = "#EXTM3U\n";
+    var m3uheader = "#EXTM3U\n#EXT-X-PLAYLIST-TYPE:VOD\n#EXT-X-VERSION:4\n";
     var m3uinfo = "#EXTALB:" + m3utitle;
-    var m3uep = "#EXTINF:-1, ";
+    var m3uep = "#EXTINF:-1, " + m3utitle;
     var m3uoutput = m3uheader + m3uinfo + '\n';
     var ct = document.querySelectorAll(".copy_text");
     ct.forEach(el => {
@@ -160,5 +160,4 @@
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
     playlistDiv.parentNode.insertBefore(stateDiv, playlistDiv);
 })();
-
 
