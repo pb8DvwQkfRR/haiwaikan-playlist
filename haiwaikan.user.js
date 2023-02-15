@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.4.1
+// @version      0.4.2
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -29,12 +29,6 @@
     var eps = '(' + ct[0].innerText.split('$')[0] + (ct.length > 1 ? '-' + ct[ct.length-1].innerText.split('$')[0] : '') + ')';
     var fileName = m3utitle + eps + ".m3u";
     var footDiv = document.querySelector('.stui-foot');
-    var playlistDiv = document.querySelector('#playlist');
-    var stateDiv = document.createElement("div");
-    stateDiv.id = "stateDiv";
-    stateDiv.style.textAlignLast = "center";
-    stateDiv.style.marginTop = "30px";
-    stateDiv.style.fontSize = "20px";
 
     var m3uDiv = document.createElement("pre");
     m3uDiv.innerHTML = m3uoutput;
@@ -45,23 +39,28 @@
     m3uDiv.style.alignItems = "center";
     m3uDiv.style.marginTop = "10px";
 
-    var isLandscape = window.innerWidth >= 768;
     var buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
 
     function updateButtonContainer() {
+        var isLandscape = window.innerWidth >= 768;
         buttonContainer.appendChild(copyButton);
         buttonContainer.appendChild(downloadButton);
         buttonContainer.appendChild(sendButton);
         buttonContainer.style.transform = isLandscape ? "translateY(50%)" : "";
         buttonContainer.style.position = isLandscape ? "fixed" : "";
         buttonContainer.style.flexDirection = isLandscape ? "column" : "";
-        buttonContainer.style.right = isLandscape ? "10px" : "";
+        buttonContainer.style.right = isLandscape ? `${window.innerWidth * 0.03}px` : "";
+        buttonContainer.style.minWidth = isLandscape ? "150px" : "";
+        buttonContainer.style.maxWidth = isLandscape ? "150px" : "";
         buttonContainer.style.bottom = isLandscape ? "50%" : "";
         buttonContainer.style.transition = isLandscape ? "all 0.3s" : "";
-        buttonContainer.style.opacity = isLandscape ? "0.7" : "";
+        buttonContainer.style.opacity = isLandscape ? "0.8" : "";
+        buttonContainer.style.backgroundColor = isLandscape ? "rgba(255, 255, 255, 0.4)" : "";
+        buttonContainer.style.border = isLandscape ? "1px solid rgba(204, 204, 204, 0.4)" : "";
+        buttonContainer.style.borderRadius = isLandscape ? "5px" : "";
         buttonContainer.addEventListener("mouseout", function(){
-            this.style.opacity = isLandscape ? "0.7" : "";
+            this.style.opacity = isLandscape ? "0.8" : "";
         });
         buttonContainer.addEventListener("mouseover", function(){
             this.style.opacity = isLandscape ? "1" : "";
@@ -72,6 +71,7 @@
     window.addEventListener("load", updateButtonContainer);
 
     var downloadButton = document.createElement("button");
+    downloadButton.id = "downloadButton";
     downloadButton.innerHTML = "下载列表";
     downloadButton.style.backgroundColor = "#4CAF50";
     downloadButton.style.color = "white";
@@ -86,16 +86,14 @@
         link.download = fileName;
         link.href = URL.createObjectURL(blob);
         link.click();
-        if(isLandscape){
-            document.getElementById("stateDiv").scrollIntoView({
-                behavior: 'smooth',
-                block: "center"
-            });
-        }
-        document.querySelector('#stateDiv').innerHTML = "完成！";
+        downloadButton.innerHTML = "已下载!";
+        setTimeout(function(){
+            downloadButton.innerHTML = "下载列表";
+        }, 3000);
     }
 
     var copyButton = document.createElement("button");
+    copyButton.id = "copyButton";
     copyButton.innerHTML = "复制";
     copyButton.style.backgroundColor = "#4CAF50";
     copyButton.style.color = "white";
@@ -105,17 +103,15 @@
 
     copyButton.addEventListener("click", function() {
         GM_setClipboard(m3uoutput);
-        if(isLandscape){
-            document.getElementById("stateDiv").scrollIntoView({
-                behavior: 'smooth',
-                block: "center"
-            });
-        }
-        document.querySelector('#stateDiv').innerHTML = "已复制！";
+        copyButton.innerHTML = "已复制!";
+        setTimeout(function(){
+            copyButton.innerHTML = "复制";
+        }, 3000);
     });
 
     var sendButton = document.createElement("button");
-    sendButton.innerHTML = "发送至 transfer.sh";
+    sendButton.id = "sendButton";
+    sendButton.innerHTML = "发送 transfer.sh";
     sendButton.style.backgroundColor = "#4CAF50";
     sendButton.style.color = "white";
     sendButton.style.margin = "10px";
@@ -132,33 +128,30 @@
             },
             timeout: 5000,
             ontimeout: function () {
-                document.querySelector('#stateDiv').innerHTML = "请求超时";
+                sendButton.innerHTML = "请求超时";
             },
             onload: function(response) {
                 var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
                 GM_setClipboard(url);
             },
-            onreadystatechange: function(response) {
-                if(isLandscape){
-                    document.getElementById("stateDiv").scrollIntoView({
-                        behavior: 'smooth',
-                        block: "center"
-                    });
-                }
+            onreadystatechange: function() {
                 switch (this.readyState) {
                     case (XMLHttpRequest.DONE):
-                        document.querySelector('#stateDiv').innerHTML = "已复制 URL！";
+                        sendButton.innerHTML = "已复制 URL!";
                         break;
                     case (XMLHttpRequest.OPENED || XMLHttpRequest.HEADERS_RECEIVED || XMLHttpRequest.LOADING):
-                        document.querySelector('#stateDiv').innerHTML = "发送中...";
+                        sendButton.innerHTML = "发送中...";
                         break;
                 }
+            },
+            onloadend: function() {
+                setTimeout(function(){
+                    sendButton.innerHTML = "发送 transfer.sh";
+                }, 3000);
             }
         })
     });
-
     footDiv.parentNode.insertBefore(m3uDiv, footDiv);
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
-    playlistDiv.parentNode.insertBefore(stateDiv, playlistDiv);
 })();
 
