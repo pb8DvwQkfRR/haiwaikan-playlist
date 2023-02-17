@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.4.5
+// @version      0.4.6
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -147,7 +147,7 @@
             },
             onload: function(response) {
                 var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
-                stateDiv.innerHTML = `<a href=${url}>${url}</a>`;
+                stateDiv.innerHTML = `<a href=${url}>${fileName}</a>`;
                 document.getElementById("stateDiv").scrollIntoView({
                     behavior: 'smooth',
                     block: "center"
