@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.4.4
+// @version      0.4.5
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -146,14 +146,13 @@
                 sendButton.textContent = "请求超时";
             },
             onload: function(response) {
-                var sendId = new URL(response.responseText).pathname.match(/\/([^/]+)\//)[1];
-                var sendUrl = `https://transfer.sh/get/${sendId}/${fileName}`
-                stateDiv.innerHTML = `<a href=${sendUrl}>${sendUrl}</a>`;
+                var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
+                stateDiv.innerHTML = `<a href=${url}>${url}</a>`;
                 document.getElementById("stateDiv").scrollIntoView({
                     behavior: 'smooth',
                     block: "center"
                 });
-                GM_setClipboard(sendUrl);
+                GM_setClipboard(url);
             },
             onreadystatechange: function() {
                 switch (this.readyState) {
@@ -176,4 +175,5 @@
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
     playlistDiv.parentNode.insertBefore(stateDiv, playlistDiv);
 })();
+
 
