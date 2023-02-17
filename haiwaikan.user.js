@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.4.6
+// @version      0.4.7
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -93,9 +93,10 @@
         link.href = URL.createObjectURL(blob);
         link.click();
         downloadButton.textContent = "已下载!";
-        setTimeout(function(){
+        var resetButton = function() {
             downloadButton.textContent = "下载列表";
-        }, 3000);
+        }
+        setTimeout(resetButton, 3000);
     }
 
     var copyButton = document.createElement("button");
@@ -119,9 +120,10 @@
             GM_setClipboard(m3uoutput);
         }
         copyButton.textContent = "已复制!";
-        setTimeout(function(){
+        var resetButton = function() {
             copyButton.textContent = "复制";
-        }, 3000);
+        }
+        setTimeout(resetButton, 3000);
     });
 
     var sendButton = document.createElement("button");
@@ -134,6 +136,12 @@
     sendButton.style.borderRadius = "4px";
 
     sendButton.addEventListener("click", function() {
+        var resetButton = function() {
+            sendButton.textContent = "发送 transfer.sh";
+        }
+        sendButton.disabled = true;
+        sendButton.style.cursor = 'not-allowed';
+        sendButton.style.backgroundColor = "gray";
         GM_xmlhttpRequest({
             method: "PUT",
             url: "https://transfer.sh/" + fileName,
@@ -146,6 +154,7 @@
                 sendButton.textContent = "请求超时";
             },
             onload: function(response) {
+
                 var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
                 stateDiv.innerHTML = `<a href=${url}>${fileName}</a>`;
                 document.getElementById("stateDiv").scrollIntoView({
@@ -155,19 +164,17 @@
                 GM_setClipboard(url);
             },
             onreadystatechange: function() {
-                switch (this.readyState) {
-                    case (XMLHttpRequest.DONE):
-                        sendButton.textContent = "已复制 URL!";
-                        break;
-                    case (XMLHttpRequest.OPENED || XMLHttpRequest.HEADERS_RECEIVED || XMLHttpRequest.LOADING):
-                        sendButton.textContent = "发送中...";
-                        break;
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    sendButton.textContent = "已复制 URL!";
+                } else {
+                    sendButton.textContent = "发送中...";
                 }
             },
             onloadend: function() {
-                setTimeout(function(){
-                    sendButton.textContent = "发送 transfer.sh";
-                }, 3000);
+                setTimeout(resetButton, 3000);
+                sendButton.disabled = false;
+                sendButton.style.backgroundColor = "#4CAF50";
+                sendButton.style.cursor = '';
             }
         })
     });
@@ -175,5 +182,4 @@
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
     playlistDiv.parentNode.insertBefore(stateDiv, playlistDiv);
 })();
-
 
