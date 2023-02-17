@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.4.3
+// @version      0.4.4
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -29,6 +29,12 @@
     var eps = `(${ct[0].textContent.split('$')[0]}${ct.length > 1 ? `-${ct[ct.length-1].textContent.split('$')[0]}` : ''})`;
     var fileName = `${m3utitle}${eps}.m3u`;
 
+    var isMobile = window.matchMedia("(any-pointer:coarse)").matches;
+    var playlistDiv = document.querySelector('#playlist');
+    var stateDiv = document.createElement("div");
+    stateDiv.id = "stateDiv";
+    stateDiv.style.textAlignLast = "center";
+    stateDiv.style.marginTop = "30px";
     var footDiv = document.querySelector('.stui-foot');
     var m3uDiv = document.createElement("pre");
     m3uDiv.textContent = m3uoutput;
@@ -102,7 +108,16 @@
     copyButton.style.borderRadius = "4px";
 
     copyButton.addEventListener("click", function() {
-        GM_setClipboard(m3uoutput);
+        if(isMobile) {
+            var textArea = document.createElement("textarea");
+            textArea.value = m3uoutput;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textArea);
+        } else {
+            GM_setClipboard(m3uoutput);
+        }
         copyButton.textContent = "已复制!";
         setTimeout(function(){
             copyButton.textContent = "复制";
@@ -131,8 +146,14 @@
                 sendButton.textContent = "请求超时";
             },
             onload: function(response) {
-                var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
-                GM_setClipboard(url);
+                var sendId = new URL(response.responseText).pathname.match(/\/([^/]+)\//)[1];
+                var sendUrl = `https://transfer.sh/get/${sendId}/${fileName}`
+                stateDiv.innerHTML = `<a href=${sendUrl}>${sendUrl}</a>`;
+                document.getElementById("stateDiv").scrollIntoView({
+                    behavior: 'smooth',
+                    block: "center"
+                });
+                GM_setClipboard(sendUrl);
             },
             onreadystatechange: function() {
                 switch (this.readyState) {
@@ -153,5 +174,6 @@
     });
     footDiv.parentNode.insertBefore(m3uDiv, footDiv);
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
+    playlistDiv.parentNode.insertBefore(stateDiv, playlistDiv);
 })();
 
