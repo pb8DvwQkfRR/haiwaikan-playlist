@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.5.2
+// @version      0.5.3
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -86,7 +86,7 @@
 
     downloadButton.onclick = function() {
         var m3uContent = m3uoutput;
-        var blob = new Blob([m3uContent], {type: "text/plain"});
+        var blob = new Blob([m3uContent], {type: "application/mpegurl"});
         var link = document.createElement("a");
         link.download = fileName;
         link.href = URL.createObjectURL(blob);
@@ -146,7 +146,7 @@
             url: "https://transfer.sh/" + fileName,
             data: m3uoutput,
             headers: {
-                "Content-Type": "application/octet-stream"
+                "Content-Type": "application/mpegurl"
             },
             timeout: 5000,
             ontimeout: function () {
@@ -197,7 +197,6 @@
                 sendButton.disabled = false;
                 sendButton.style.backgroundColor = "#4CAF50";
                 sendButton.style.cursor = '';
-
             }
         })
     });
