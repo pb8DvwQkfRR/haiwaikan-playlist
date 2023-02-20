@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.5.0
+// @version      0.5.1
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -157,12 +157,12 @@
                 var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
                 stateDiv.innerHTML = `
                 <div style="padding: 15px; border-bottom: 1px solid #eee"><a href=${url}>${fileName}</a></div>
-                <div id="openin" style="display: flex; margin-top: 20px; justify-content: center; padding-bottom: 15px;">
-                <a href="iina://weblink?url=${url}"><img src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/iina.webp"></a>
-                <a href="potplayer://${url}"><img src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/potplayer.webp"></a>
-                <a href="vlc://${url}"><img src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/vlc.webp"></a>
-                <a href="nplayer-${url}"><img src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/nplayer.webp"></a>
-                <a href="infuse://x-callback-url/play?url=${url}"><img src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/infuse.webp"></a>
+                <div id="openin" style="display: flex; margin-top: 20px; justify-content: center; padding-bottom: 15px; gap: 1rem">
+                <a href="iina://weblink?url=${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/iina.webp"></a>
+                <a href="potplayer://${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/potplayer.webp"></a>
+                <a href="vlc://${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/vlc.webp"></a>
+                <a href="nplayer-${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/nplayer.webp"></a>
+                <a href="infuse://x-callback-url/play?url=${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/infuse.webp"></a>
                 </div>
                 `;
                 document.getElementById("stateDiv").scrollIntoView({
