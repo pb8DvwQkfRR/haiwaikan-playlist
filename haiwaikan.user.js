@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.4.7
+// @version      0.5.0
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -33,8 +33,7 @@
     var playlistDiv = document.querySelector('#playlist');
     var stateDiv = document.createElement("div");
     stateDiv.id = "stateDiv";
-    stateDiv.style.textAlignLast = "center";
-    stateDiv.style.marginTop = "30px";
+
     var footDiv = document.querySelector('.stui-foot');
     var m3uDiv = document.createElement("pre");
     m3uDiv.textContent = m3uoutput;
@@ -156,7 +155,16 @@
             onload: function(response) {
 
                 var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
-                stateDiv.innerHTML = `<a href=${url}>${fileName}</a>`;
+                stateDiv.innerHTML = `
+                <div style="padding: 15px; border-bottom: 1px solid #eee"><a href=${url}>${fileName}</a></div>
+                <div id="openin" style="display: flex; margin-top: 20px; justify-content: center; padding-bottom: 15px;">
+                <a href="iina://weblink?url=${url}"><img src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/iina.webp"></a>
+                <a href="potplayer://${url}"><img src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/potplayer.webp"></a>
+                <a href="vlc://${url}"><img src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/vlc.webp"></a>
+                <a href="nplayer-${url}"><img src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/nplayer.webp"></a>
+                <a href="infuse://x-callback-url/play?url=${url}"><img src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/infuse.webp"></a>
+                </div>
+                `;
                 document.getElementById("stateDiv").scrollIntoView({
                     behavior: 'smooth',
                     block: "center"
@@ -175,6 +183,20 @@
                 sendButton.disabled = false;
                 sendButton.style.backgroundColor = "#4CAF50";
                 sendButton.style.cursor = '';
+                stateDiv.style.textAlignLast = "center";
+                stateDiv.style.marginTop = "30px";
+                stateDiv.style.backgroundColor = "#fff";
+                stateDiv.style.borderRadius = "5px";
+                stateDiv.style.border = "1px solid #eee";
+                stateDiv.style.boxShadow = "0 5px 10px #eee";
+                function updateStateDiv() {
+                    var isLandscape = window.innerWidth >= 768;
+                    stateDiv.style.borderRadius = isLandscape ? "5px" : "0";
+                    stateDiv.style.border = isLandscape ? "1px solid #eee" : "0";
+                    stateDiv.style.boxShadow = isLandscape ? "0 5px 10px #eee" : "none";
+                }
+                window.addEventListener("resize", updateStateDiv);
+                window.addEventListener("load", updateStateDiv);
             }
         })
     });
