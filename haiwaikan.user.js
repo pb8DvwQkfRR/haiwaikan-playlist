@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.5.1
+// @version      0.5.2
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -170,19 +170,6 @@
                     block: "center"
                 });
                 GM_setClipboard(url);
-            },
-            onreadystatechange: function() {
-                if (this.readyState === XMLHttpRequest.DONE) {
-                    sendButton.textContent = "已复制 URL!";
-                } else {
-                    sendButton.textContent = "发送中...";
-                }
-            },
-            onloadend: function() {
-                setTimeout(resetButton, 3000);
-                sendButton.disabled = false;
-                sendButton.style.backgroundColor = "#4CAF50";
-                sendButton.style.cursor = '';
                 stateDiv.style.textAlignLast = "center";
                 stateDiv.style.marginTop = "30px";
                 stateDiv.style.backgroundColor = "#fff";
@@ -197,6 +184,20 @@
                 }
                 window.addEventListener("resize", updateStateDiv);
                 window.addEventListener("load", updateStateDiv);
+            },
+            onreadystatechange: function() {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    sendButton.textContent = "已复制 URL!";
+                } else {
+                    sendButton.textContent = "发送中...";
+                }
+            },
+            onloadend: function() {
+                setTimeout(resetButton, 3000);
+                sendButton.disabled = false;
+                sendButton.style.backgroundColor = "#4CAF50";
+                sendButton.style.cursor = '';
+
             }
         })
     });
