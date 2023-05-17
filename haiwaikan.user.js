@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.5.3
+// @version      0.5.4
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -158,11 +158,12 @@
                 stateDiv.innerHTML = `
                 <div style="padding: 15px; border-bottom: 1px solid #eee"><a href=${url}>${fileName}</a></div>
                 <div id="openin" style="display: flex; margin-top: 20px; justify-content: center; padding-bottom: 15px; gap: 1rem">
-                <a href="iina://weblink?url=${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/iina.webp"></a>
-                <a href="potplayer://${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/potplayer.webp"></a>
-                <a href="vlc://${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/vlc.webp"></a>
-                <a href="nplayer-${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/nplayer.webp"></a>
-                <a href="infuse://x-callback-url/play?url=${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@3.10.1/dist/images/infuse.webp"></a>
+                <a href="iina://weblink?url=${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@latest/dist/images/iina.webp"></a>
+                <a href="potplayer://${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@latest/dist/images/potplayer.webp"></a>
+                <a href="vlc://${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@latest/dist/images/vlc.webp"VLC</a>
+                <a href="nplayer-${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@latest/dist/images/nplayer.webp"></a>
+                <a href="infuse://x-callback-url/play?url=${url}"><img style="width: 3rem" src="https://npm.elemecdn.com/alist-web@latest/dist/images/infuse.webp"></a>
+                <a href="aptv://add?url=${url}"><img style="width: 3rem" src="https://is4-ssl.mzstatic.com/image/thumb/Purple116/v4/ed/70/8d/ed708ddf-7343-2ccb-e391-2701118ee4ce/AppIcon-0-85-220-4-2x.png/217x0w.webp"></a>
                 </div>
                 `;
                 document.getElementById("stateDiv").scrollIntoView({
