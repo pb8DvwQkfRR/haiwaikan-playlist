@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.5.4
+// @version      0.5.5
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -10,6 +10,7 @@
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=haiwaikan.com
 // @grant        GM_xmlhttpRequest
 // @grant        GM_setClipboard
+// @connect      temp.sh
 // ==/UserScript==
 
 (function() {
@@ -85,8 +86,7 @@
     downloadButton.style.borderRadius = "4px";
 
     downloadButton.onclick = function() {
-        var m3uContent = m3uoutput;
-        var blob = new Blob([m3uContent], {type: "application/mpegurl"});
+        var blob = new Blob([m3uoutput], {type: "application/mpegurl"});
         var link = document.createElement("a");
         link.download = fileName;
         link.href = URL.createObjectURL(blob);
@@ -127,7 +127,7 @@
 
     var sendButton = document.createElement("button");
     sendButton.id = "sendButton";
-    sendButton.textContent = "发送 transfer.sh";
+    sendButton.textContent = "发送 temp.sh";
     sendButton.style.backgroundColor = "#4CAF50";
     sendButton.style.color = "white";
     sendButton.style.margin = "10px";
@@ -136,25 +136,23 @@
 
     sendButton.addEventListener("click", function() {
         var resetButton = function() {
-            sendButton.textContent = "发送 transfer.sh";
+            sendButton.textContent = "发送 temp.sh";
         }
         sendButton.disabled = true;
         sendButton.style.cursor = 'not-allowed';
         sendButton.style.backgroundColor = "gray";
+        var formData = new FormData();
+        formData.append('uploadfile', new Blob([m3uoutput], { type: 'application/mpegurl' }), fileName);
         GM_xmlhttpRequest({
-            method: "PUT",
-            url: "https://transfer.sh/" + fileName,
-            data: m3uoutput,
-            headers: {
-                "Content-Type": "application/mpegurl"
-            },
+            method: "POST",
+            url: "https://temp.sh/upload",
+            data: formData,
             timeout: 5000,
             ontimeout: function () {
                 sendButton.textContent = "请求超时";
             },
             onload: function(response) {
-
-                var url = response.responseText.replace("transfer.sh/", "transfer.sh/get/");
+                var url = response.responseText
                 stateDiv.innerHTML = `
                 <div style="padding: 15px; border-bottom: 1px solid #eee"><a href=${url}>${fileName}</a></div>
                 <div id="openin" style="display: flex; margin-top: 20px; justify-content: center; padding-bottom: 15px; gap: 1rem">
