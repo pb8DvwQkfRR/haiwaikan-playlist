@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Haiwaikan Playlist
 // @namespace    http://tampermonkey.net/
-// @version      0.5.5
+// @version      0.5.6
 // @description  Add playlist
 // @author       pb8DvwQkfRR
 // @license      MIT
@@ -47,34 +47,6 @@
 
     var buttonContainer = document.createElement("div");
     buttonContainer.style.display = "flex";
-
-    function updateButtonContainer() {
-        var isLandscape = window.innerWidth >= 768;
-        buttonContainer.appendChild(copyButton);
-        buttonContainer.appendChild(downloadButton);
-        buttonContainer.appendChild(sendButton);
-        buttonContainer.style.transform = isLandscape ? "translateY(50%)" : "";
-        buttonContainer.style.position = isLandscape ? "fixed" : "";
-        buttonContainer.style.flexDirection = isLandscape ? "column" : "";
-        buttonContainer.style.right = isLandscape ? `${window.innerWidth * 0.03}px` : "";
-        buttonContainer.style.minWidth = isLandscape ? "150px" : "";
-        buttonContainer.style.maxWidth = isLandscape ? "150px" : "";
-        buttonContainer.style.bottom = isLandscape ? "50%" : "";
-        buttonContainer.style.transition = isLandscape ? "all 0.3s" : "";
-        buttonContainer.style.opacity = isLandscape ? "0.8" : "";
-        buttonContainer.style.backgroundColor = isLandscape ? "rgba(255, 255, 255, 0.4)" : "";
-        buttonContainer.style.border = isLandscape ? "1px solid rgba(204, 204, 204, 0.4)" : "";
-        buttonContainer.style.borderRadius = isLandscape ? "5px" : "";
-        buttonContainer.addEventListener("mouseout", function(){
-            this.style.opacity = isLandscape ? "0.8" : "";
-        });
-        buttonContainer.addEventListener("mouseover", function(){
-            this.style.opacity = isLandscape ? "1" : "";
-        });
-    }
-
-    window.addEventListener("resize", updateButtonContainer);
-    window.addEventListener("load", updateButtonContainer);
 
     var downloadButton = document.createElement("button");
     downloadButton.id = "downloadButton";
@@ -199,6 +171,36 @@
             }
         })
     });
+
+    function updateButtonContainer() {
+        var isLandscape = window.innerWidth >= 768;
+        buttonContainer.appendChild(copyButton);
+        buttonContainer.appendChild(downloadButton);
+        buttonContainer.appendChild(sendButton);
+        buttonContainer.style.transform = isLandscape ? "translateY(50%)" : "";
+        buttonContainer.style.position = isLandscape ? "fixed" : "";
+        buttonContainer.style.flexDirection = isLandscape ? "column" : "";
+        buttonContainer.style.right = isLandscape ? `${window.innerWidth * 0.03}px` : "";
+        buttonContainer.style.minWidth = isLandscape ? "150px" : "";
+        buttonContainer.style.maxWidth = isLandscape ? "150px" : "";
+        buttonContainer.style.bottom = isLandscape ? "50%" : "";
+        buttonContainer.style.transition = isLandscape ? "all 0.3s" : "";
+        buttonContainer.style.opacity = isLandscape ? "0.8" : "";
+        buttonContainer.style.backgroundColor = isLandscape ? "rgba(255, 255, 255, 0.4)" : "";
+        buttonContainer.style.border = isLandscape ? "1px solid rgba(204, 204, 204, 0.4)" : "";
+        buttonContainer.style.borderRadius = isLandscape ? "5px" : "";
+        buttonContainer.addEventListener("mouseout", function(){
+            this.style.opacity = isLandscape ? "0.8" : "";
+        });
+        buttonContainer.addEventListener("mouseover", function(){
+            this.style.opacity = isLandscape ? "1" : "";
+        });
+    }
+    if (document.readyState == 'complete') {
+        updateButtonContainer();
+    }
+    window.addEventListener("load", updateButtonContainer);
+    window.addEventListener("resize", updateButtonContainer);
     footDiv.parentNode.insertBefore(m3uDiv, footDiv);
     m3uDiv.insertBefore(buttonContainer, m3uDiv.firstChild);
     playlistDiv.parentNode.insertBefore(stateDiv, playlistDiv);
